@@ -3,6 +3,8 @@
 
 FILE *ifp, *ofp;
 int main ( int argc, char *argv[] ) {
+  unsigned char c;
+
   if ( argc != 3 ) {
     printf("Error: translator <input file> <output file>\n");
     exit(0);
@@ -18,13 +20,12 @@ int main ( int argc, char *argv[] ) {
     exit(0);
   }
 
+  while ( fread(&c, sizeof(char), 1, ifp ) == 1) {
+    fprintf( ofp, "\"%02X\",\n", c);
+  }
+
   fclose( ifp );
   fclose( ofp );
 
-  // Read the input file and write to the output file
-  // char c;
-  // while ((c = fgetc(ifp)) != EOF) {
-  //   fputc(c, ofp);
-  // }
   return 0;
 }
