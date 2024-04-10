@@ -1,3 +1,5 @@
+type rom_type is array (0 to 1019) of std_logic_vector(7 downto 0);
+signal rom : rom_type := (
 "04",
 "00",
 "10",
@@ -1016,5 +1018,5 @@
 "00",
 "23",
 "00",
-"0B",
-"0B",
+"0B"
+);

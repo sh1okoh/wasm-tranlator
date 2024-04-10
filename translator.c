@@ -42,19 +42,29 @@ int main ( int argc, char *argv[] ) {
         }
       }
     }
+
+    if (sec == 0x0A) {
+      fprintf (ofp, "type rom_type is array (0 to %d) of std_logic_vector(7 downto 0);\n", sec_siz - 1);
+      fprintf (ofp, "signal rom : rom_type := (\n");
+    }
     if ( sec != 0x0A) {
       for (; sec_siz > 0; sec_siz-- ) {
         fread(&c, sizeof(char), 1, ifp);
       }
     } else { // Code section
       fread(&c, sizeof(char), 1, ifp);
-      for (; sec_siz > 0; sec_siz-- ) {
+      for (sec_siz--; sec_siz > 0; sec_siz-- ) {
         fread(&c, sizeof(char), 1, ifp);
-        fprintf( ofp, "\"%02X\",\n", c);
+        if ( sec_siz != 1 ) {
+          fprintf( ofp, "\"%02X\",\n", c);
+        } else {
+          fprintf( ofp, "\"%02X\"\n", c);        
+        }
       }
     }
   }
 
+  fprintf(ofp, ");\n");
   fclose( ifp );
   fclose( ofp );
 
