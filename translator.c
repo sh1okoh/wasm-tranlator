@@ -4,7 +4,7 @@
 FILE *ifp, *ofp;
 int main ( int argc, char *argv[] ) {
   unsigned char c, sec;
-  int sec_siz;
+  int sec_siz, remain;
 
   if ( argc != 3 ) {
     printf("Error: translator <input file> <output file>\n");
@@ -44,9 +44,12 @@ int main ( int argc, char *argv[] ) {
     }
 
     if (sec == 0x0A) {
-      fprintf (ofp, "type rom_type is array (0 to %d) of std_logic_vector(7 downto 0);\n", sec_siz - 1);
+      fprintf (ofp, "type rom_type is array (0 to 1023) of std_logic_vector(7 downto 0);\n");
       fprintf (ofp, "signal rom : rom_type := (\n");
     }
+
+    remain = 1024 - sec_siz;
+
     if ( sec != 0x0A) {
       for (; sec_siz > 0; sec_siz-- ) {
         fread(&c, sizeof(char), 1, ifp);
@@ -55,12 +58,18 @@ int main ( int argc, char *argv[] ) {
       fread(&c, sizeof(char), 1, ifp);
       for (sec_siz--; sec_siz > 0; sec_siz-- ) {
         fread(&c, sizeof(char), 1, ifp);
-        if ( sec_siz != 1 ) {
-          fprintf( ofp, "\"%02X\",\n", c);
-        } else {
-          fprintf( ofp, "\"%02X\"\n", c);        
-        }
+        fprintf( ofp, "X\"%02X\",\n", c);
       }
+    }
+  }
+
+  while ( remain > 0 ) {
+    fprintf ( ofp, "X\"00\"");
+    remain--;
+    if ( remain > 0 ) {
+      fprintf ( ofp, ",\n");
+    } else {
+      fprintf ( ofp, "\n");
     }
   }
 
