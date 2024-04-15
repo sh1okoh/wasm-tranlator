@@ -48,7 +48,8 @@ int main ( int argc, char *argv[] ) {
       fprintf (ofp, "signal rom : rom_type := (\n");
     }
 
-    remain = 1024 - sec_siz;
+    // sec_siz -1 しているのは関数の個数をカウントするバイトをスキップしているため
+    remain = 1024 - (sec_siz - 1);
 
     if ( sec != 0x0A) {
       for (; sec_siz > 0; sec_siz-- ) {
